@@ -12,7 +12,7 @@ var DB *gorm.DB
 
 // GetDatabase returns a database instance.
 func GetDatabase() *gorm.DB {
-	
+
 	user := envvar.DBUser()
 	password := envvar.DBPassword()
 	dbname := envvar.DBName()

@@ -15,8 +15,6 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//gorm
-
 func main() {
 	port, exists := os.LookupEnv("PORT")
 	if !exists {
@@ -26,13 +24,12 @@ func main() {
 	database.DB = database.GetDatabase()
 
 	router := gin.Default()
-	// Automigracion 
+	// Automigracion
 
 	database.DB.AutoMigrate(&model.Skill{})
 	database.DB.AutoMigrate(&model.User{})
 	database.DB.AutoMigrate(&model.UserSkill{})
 	database.DB.AutoMigrate(&model.Category{})
-
 
 	// rutas
 
