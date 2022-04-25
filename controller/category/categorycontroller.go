@@ -1,0 +1,109 @@
+package controller
+
+import (
+	"log"
+	"net/http"
+	"projectStaff/database"
+	"projectStaff/model"
+	"time"
+	"github.com/gin-gonic/gin"
+)
+
+func GetCategories(context *gin.Context) { 
+
+	var categoriesList []model.Category
+
+	result := database.DB.Find(&categoriesList)
+
+	if result.Error != nil {
+		log.Printf("Error getting all categoories, reason: %v\n", result.Error)
+
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"status":  http.StatusInternalServerError,
+			"message": "something went wrong getting all categories",
+		})
+		return
+	}
+	
+	context.JSON(http.StatusOK, gin.H{
+		"status":  http.StatusOK,
+		"message": "All results",
+		"data":    categoriesList,
+	})
+	return
+}
+
+func CreateCategory(context *gin.Context) {
+
+	var category model.Category
+
+	context.BindJSON(&category)
+
+	name := category.Name 
+	CreatedAt := time.Now()
+	UpdatedAt := time.Now()
+
+	newCategory := model.Category{Name: name, CreatedAt: CreatedAt, UpdatedAt: UpdatedAt}
+
+	result := database.DB.Select("name", "CreatedAt", "UpdatedAt").Create(&newCategory)
+
+	if result.Error != nil {
+		log.Printf("Error while inserting new cateogry into db, Reason: %v\n", result.Error)
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"status":  http.StatusInternalServerError,
+			"message": "Something went wrong",
+		})
+		return
+	}
+	context.JSON(http.StatusCreated, gin.H{
+		"status":  http.StatusCreated,
+		"message": "Category created Successfully",
+	})
+	return
+}
+
+func DeleteCategories(context *gin.Context) {
+
+	categoryId := context.Param("categoryId")
+
+	result := database.DB.Unscoped().Delete(&model.Category{}, categoryId) 
+
+	if result.Error != nil {
+		log.Printf("Error while deleting a single category, Reason: %v\n", result.Error)
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"status":  http.StatusInternalServerError,
+			"message": "Something went wrong",
+		})
+		return
+	}
+	context.JSON(http.StatusOK, gin.H{
+		"status":  http.StatusOK,
+		"message": "category deleted successfully",
+	})
+	return
+}
+
+func EditCategories(context *gin.Context) {
+
+	categoryId := context.Param("categoryId")
+
+	var category model.Category
+	context.BindJSON(&category)
+	Name := category.Name
+
+	result := database.DB.Find(&model.Category{}).Where("id = ?", categoryId).Select("name").Update("name", Name)
+
+	if result.Error != nil {
+		log.Printf("Error while deleting a single edit, Reason: %v\n", result.Error)
+		context.JSON(http.StatusInternalServerError, gin.H{
+			"status":  http.StatusInternalServerError,
+			"message": "Something went wrong",
+		})
+		return
+	}
+	context.JSON(http.StatusOK, gin.H{
+		"status":  200,
+		"message": "Category Edited Successfully",
+	})
+	return
+}
