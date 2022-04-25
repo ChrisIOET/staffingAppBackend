@@ -5,15 +5,13 @@ import (
 	"net/http"
 	"projectStaff/database"
 	"projectStaff/model"
-
 	"github.com/gin-gonic/gin"
 )
 
-func GetUsers(context *gin.Context) { //cntexto datos q me manda la ruta.
+func GetUsers(context *gin.Context) { 
 
 	var usersList []model.User
 
-	// GORM
 	result := database.DB.Find(&usersList)
 
 	if result.Error != nil {
@@ -25,7 +23,6 @@ func GetUsers(context *gin.Context) { //cntexto datos q me manda la ruta.
 		})
 		return
 	}
-	// GIN -> preparo el json a devolver.
 	context.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
 		"message": "All results",

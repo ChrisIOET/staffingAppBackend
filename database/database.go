@@ -3,16 +3,14 @@ package database
 import (
 	"fmt"
 	"projectStaff/internal/envvar"
-
+	"projectStaff/model"
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
 )
 
 var DB *gorm.DB
 
-// GetDatabase returns a database instance.
 func GetDatabase() *gorm.DB {
-
 	user := envvar.DBUser()
 	password := envvar.DBPassword()
 	dbname := envvar.DBName()
@@ -25,3 +23,17 @@ func GetDatabase() *gorm.DB {
 	db, _ := gorm.Open(postgres.Open(dsn), &gorm.Config{})
 	return db
 }
+
+func MigrateDatabaseTables() {
+
+	DB.AutoMigrate(&model.Skill{})
+	DB.AutoMigrate(&model.User{})
+	DB.AutoMigrate(&model.UserSkill{})
+	DB.AutoMigrate(&model.Category{})
+}
+
+
+
+
+
+

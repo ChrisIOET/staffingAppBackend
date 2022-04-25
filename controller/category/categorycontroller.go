@@ -6,16 +6,13 @@ import (
 	"projectStaff/database"
 	"projectStaff/model"
 	"time"
-	// "fmt"
 	"github.com/gin-gonic/gin"
-	// "github.com/go-pg/pg/v9"
 )
 
-func GetCategories(context *gin.Context) { //cntexto datos q me manda la ruta.
+func GetCategories(context *gin.Context) { 
 
 	var categoriesList []model.Category
 
-	// GORM
 	result := database.DB.Find(&categoriesList)
 
 	if result.Error != nil {
@@ -27,7 +24,7 @@ func GetCategories(context *gin.Context) { //cntexto datos q me manda la ruta.
 		})
 		return
 	}
-	// GIN -> preparo el json a devolver.
+	
 	context.JSON(http.StatusOK, gin.H{
 		"status":  http.StatusOK,
 		"message": "All results",
@@ -40,10 +37,9 @@ func CreateCategory(context *gin.Context) {
 
 	var category model.Category
 
-	//obtener json y el id generado
 	context.BindJSON(&category)
 
-	name := category.Name //el unico dato q me mandan en el api.
+	name := category.Name 
 	CreatedAt := time.Now()
 	UpdatedAt := time.Now()
 
@@ -70,7 +66,7 @@ func DeleteCategories(context *gin.Context) {
 
 	categoryId := context.Param("categoryId")
 
-	result := database.DB.Unscoped().Delete(&model.Category{}, categoryId) //vamos a borrar la llave primaria cateogry ID
+	result := database.DB.Unscoped().Delete(&model.Category{}, categoryId) 
 
 	if result.Error != nil {
 		log.Printf("Error while deleting a single category, Reason: %v\n", result.Error)
@@ -91,9 +87,8 @@ func EditCategories(context *gin.Context) {
 
 	categoryId := context.Param("categoryId")
 
-	//las 2 lineas de abajo son necesarias
 	var category model.Category
-	context.BindJSON(&category) // ---> super importante para que me cambie el value dentro de la DB
+	context.BindJSON(&category)
 	Name := category.Name
 
 	result := database.DB.Find(&model.Category{}).Where("id = ?", categoryId).Select("name").Update("name", Name)

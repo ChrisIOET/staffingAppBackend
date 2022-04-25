@@ -4,9 +4,6 @@ import (
 	"gorm.io/gorm"
 	"time"
 )
-
-// Id, Name, CategoryId
-
 type Skill struct {
 	ID        uint           `json:"id"`
 	Name      string         `json:"name"`

@@ -40,3 +40,16 @@ func DBPort() string {
 	}
 	return port
 }
+
+func ApiPort() string {
+	port, exists := os.LookupEnv("PORT")
+	if !exists {
+		port = "8081"
+	}
+	return port 
+}
+
+
+
+
+

@@ -1,46 +1,22 @@
 package main
 
 import (
-	"fmt"
 	"log"
-	// "projectStaff/controller"
 	"projectStaff/database"
-	// "projectStaff/repository"
-	"net/http"
-	"os"
-	"projectStaff/model"
-
+	"projectStaff/internal/envvar"
 	"projectStaff/routes"
-
 	"github.com/gin-gonic/gin"
 )
 
+
 func main() {
-	port, exists := os.LookupEnv("PORT")
-	if !exists {
-		port = "8081"
-	}
+	PORT := envvar.ApiPort()
 
 	database.DB = database.GetDatabase()
+	database.MigrateDatabaseTables()
 
 	router := gin.Default()
-	// Automigracion
+	routes.CreateRoutes(router)
 
-	database.DB.AutoMigrate(&model.Skill{})
-	database.DB.AutoMigrate(&model.User{})
-	database.DB.AutoMigrate(&model.UserSkill{})
-	database.DB.AutoMigrate(&model.Category{})
-
-	// rutas
-
-	routes.CategoryRoutes(router)
-	routes.UserRoutes(router)
-	log.Fatal(router.Run(":8081"))
-
-	// db := database.GetDatabase()
-	// repos := repository.InitRepositories(db)
-	// controllers := controller.InitControllers(repos)
-
-	fmt.Println("server is started at: http://localhost:/" + port + "/")
-	http.ListenAndServe(":"+port, nil)
+	log.Fatal(router.Run(":"+PORT))
 }

@@ -1,9 +1,7 @@
 package routes
 
 import (
-	// "net/http"
 	"projectStaff/controller/user"
-
 	"github.com/gin-gonic/gin"
 )
 

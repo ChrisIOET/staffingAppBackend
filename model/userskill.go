@@ -4,8 +4,6 @@ import (
 	"gorm.io/gorm"
 	"time"
 )
-
-// User struct
 type UserSkill struct {
 	UserID     uint           `gorm:"primaryKey" json:"id"`
 	SkillID    uint           `gorm:"primaryKey" json:"skillid"`
